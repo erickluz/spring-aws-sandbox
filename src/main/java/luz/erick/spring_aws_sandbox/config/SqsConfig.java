@@ -20,14 +20,20 @@ public class SqsConfig {
     @Value("${aws.region}")
     private String awsRegion;
 
+    @Value("aws.accoundId:test")
+    private String accountId;
+
     @Bean
     SqsClient SqsClient() {
+        // LOCALSTACK
+        System.out.println("REGIAO: " + awsRegion);
+        System.out.println("ENDPOINT: " + awsSqsEndpoint);
         return SqsClient.builder()
         .endpointOverride(URI.create(awsSqsEndpoint))
         .region(Region.of(awsRegion))
         .credentialsProvider(
             StaticCredentialsProvider.create(
-                AwsBasicCredentials.create("test", "test")
+                AwsBasicCredentials.create(accountId, "test")
         ))
         .build();
     }
