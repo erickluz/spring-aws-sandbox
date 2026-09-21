@@ -1,4 +1,4 @@
-package luz.erick.spring_aws_sandbox.hello;
+package luz.erick.spring_aws_sandbox.repository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,11 +18,11 @@ import software.amazon.awssdk.services.sqs.paginators.ListQueuesIterable;
 
 
 @Service 
-public class HelloSQS {
+public class SQSRepository {
 
     private SqsClient sqsClient;
 
-    public HelloSQS(SqsClient sqsClient) {
+    public SQSRepository(SqsClient sqsClient) {
         this.sqsClient = sqsClient;
     }
 
@@ -42,8 +42,6 @@ public class HelloSQS {
 
     public String createQueue(String queueName) {
         try {
-            System.out.println("\nCreate Queue");
-
             CreateQueueRequest createQueueRequest = CreateQueueRequest.builder()
                     .queueName(queueName)
                     .build();
@@ -63,14 +61,11 @@ public class HelloSQS {
 
     public String deleteQueue(String queueUrl) {
         try {
-            System.out.println("\nCreate Queue");
-
             DeleteQueueRequest createQueueRequest = DeleteQueueRequest.builder()
                     .queueUrl(queueUrl)
                     .build();
 
             sqsClient.deleteQueue(createQueueRequest);
-
         } catch (SqsException e) {
             System.err.println(e.awsErrorDetails().errorMessage());
             System.exit(1);
@@ -115,7 +110,5 @@ public class HelloSQS {
         }
         return null;
     }
-
-
 
 }

@@ -1,4 +1,4 @@
-package luz.erick.spring_aws_sandbox.hello;
+package luz.erick.spring_aws_sandbox.repository;
 
 
 import java.util.List;
@@ -9,12 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import luz.erick.spring_aws_sandbox.config.SqsConfig;
+import luz.erick.spring_aws_sandbox.repository.SQSRepository;
 
 @SpringBootTest
-public class HelloSQSTest {
+public class SQSRepositoryTest {
 
     @Autowired
-    private HelloSQS helloSQS;
+    private SQSRepository repositorySQS;
 
     @Autowired 
     private SqsConfig sqsConfig;
@@ -22,10 +23,10 @@ public class HelloSQSTest {
     @Test 
     void deveCriarEListarQueues() {
 
-        helloSQS.createQueue("q1");
-        helloSQS.createQueue("q2");
+        repositorySQS.createQueue("q1");
+        repositorySQS.createQueue("q2");
 
-        List<String> queues = helloSQS.listQueues()
+        List<String> queues = repositorySQS.listQueues()
                                 .stream()
                                 .map(q -> q.replace("http://", ""))
                                 .toList();
@@ -37,17 +38,16 @@ public class HelloSQSTest {
         Assertions.assertEquals(URLServer + "q2", queues.get(1));
 
         String messageTest = "msgTeste1";
-        System.out.println("sendmessage");
-        helloSQS.sendMessage("q1", messageTest);
-        System.out.println("receivemessage");
-        List<String> messages = helloSQS.receiveMessages(URLBase + "q1");
+        repositorySQS.sendMessage("q1", messageTest);
+
+        List<String> messages = repositorySQS.receiveMessages(URLBase + "q1");
         String message = messages.get(0);
         Assertions.assertEquals(messageTest, message);
 
-        helloSQS.deleteQueue(URLBase + "q1"); 
-        helloSQS.deleteQueue(URLBase + "q2"); 
+        repositorySQS.deleteQueue(URLBase + "q1"); 
+        repositorySQS.deleteQueue(URLBase + "q2"); 
 
-        Assertions.assertTrue(helloSQS.listQueues().isEmpty());
+        Assertions.assertTrue(repositorySQS.listQueues().isEmpty());
     }
 
     private String getUrlBase() {
