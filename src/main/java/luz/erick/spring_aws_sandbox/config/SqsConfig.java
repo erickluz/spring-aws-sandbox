@@ -20,7 +20,7 @@ public class SqsConfig {
     @Value("${aws.region}")
     private String awsRegion;
 
-    @Value("aws.accoundId:test")
+    @Value("${aws.accountId}")
     private String accountId;
 
     @Bean
@@ -36,6 +36,18 @@ public class SqsConfig {
                 AwsBasicCredentials.create(accountId, "test")
         ))
         .build();
+    }
+
+    public String getAWSAccountId() {
+        return this.accountId;
+    }
+
+    public String getAWSEndpoint() {
+        return this.awsSqsEndpoint;
+    }
+
+    public String getAWSRegion() {
+        return this.awsRegion;
     }
 
 }

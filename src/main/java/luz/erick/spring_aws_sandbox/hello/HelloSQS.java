@@ -6,6 +6,13 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import software.amazon.awssdk.services.sqs.SqsClient;
+import software.amazon.awssdk.services.sqs.model.CreateQueueRequest;
+import software.amazon.awssdk.services.sqs.model.DeleteQueueRequest;
+import software.amazon.awssdk.services.sqs.model.GetQueueUrlRequest;
+import software.amazon.awssdk.services.sqs.model.GetQueueUrlResponse;
+import software.amazon.awssdk.services.sqs.model.Message;
+import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest;
+import software.amazon.awssdk.services.sqs.model.SendMessageRequest;
 import software.amazon.awssdk.services.sqs.model.SqsException;
 import software.amazon.awssdk.services.sqs.paginators.ListQueuesIterable;
 
@@ -24,7 +31,7 @@ public class HelloSQS {
             ListQueuesIterable listQueues = this.sqsClient.listQueuesPaginator();
             return listQueues.stream()
                     .flatMap(r -> r.queueUrls().stream())
-                    .map(content -> " Queue URL: " + content.toLowerCase())
+                    .map(content -> content.toLowerCase())
                     .collect(Collectors.toList());
         } catch (SqsException e) {
             System.err.println(e.awsErrorDetails().errorMessage());
@@ -32,5 +39,83 @@ public class HelloSQS {
         }
         return null;
     }
+
+    public String createQueue(String queueName) {
+        try {
+            System.out.println("\nCreate Queue");
+
+            CreateQueueRequest createQueueRequest = CreateQueueRequest.builder()
+                    .queueName(queueName)
+                    .build();
+
+            sqsClient.createQueue(createQueueRequest);
+
+            GetQueueUrlResponse getQueueUrlResponse = this.sqsClient
+                    .getQueueUrl(GetQueueUrlRequest.builder().queueName(queueName).build());
+            return getQueueUrlResponse.queueUrl();
+
+        } catch (SqsException e) {
+            System.err.println(e.awsErrorDetails().errorMessage());
+            System.exit(1);
+        }
+        return "";
+    }
+
+    public String deleteQueue(String queueUrl) {
+        try {
+            System.out.println("\nCreate Queue");
+
+            DeleteQueueRequest createQueueRequest = DeleteQueueRequest.builder()
+                    .queueUrl(queueUrl)
+                    .build();
+
+            sqsClient.deleteQueue(createQueueRequest);
+
+        } catch (SqsException e) {
+            System.err.println(e.awsErrorDetails().errorMessage());
+            System.exit(1);
+        }
+        return "";
+    }
+
+    public void sendMessage(String queueName, String message) {
+        try {
+
+            GetQueueUrlRequest getQueueRequest = GetQueueUrlRequest.builder()
+                    .queueName(queueName)
+                    .build();
+
+            String queueUrl = sqsClient.getQueueUrl(getQueueRequest).queueUrl();
+            SendMessageRequest sendMsgRequest = SendMessageRequest.builder()
+                    .queueUrl(queueUrl)
+                    .messageBody(message)
+                    .build();
+
+            sqsClient.sendMessage(sendMsgRequest);
+
+        } catch (SqsException e) {
+            System.err.println(e.awsErrorDetails().errorMessage());
+            System.exit(1);
+        }
+    }
+
+    public List<String> receiveMessages(String queueURL) {
+        try {
+            ReceiveMessageRequest receiveMessageRequest = ReceiveMessageRequest.builder()
+                    .queueUrl(queueURL)
+                    .maxNumberOfMessages(5)
+                    .build();
+            List<Message> response = this.sqsClient.receiveMessage(receiveMessageRequest).messages();
+            
+            return response.stream().map(m -> m.body()).toList();
+
+        } catch (SqsException e) {
+            System.err.println(e.awsErrorDetails().errorMessage());
+            System.exit(1);
+        }
+        return null;
+    }
+
+
 
 }
