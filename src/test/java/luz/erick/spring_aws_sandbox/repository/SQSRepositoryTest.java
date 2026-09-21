@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import luz.erick.spring_aws_sandbox.config.SqsConfig;
-import luz.erick.spring_aws_sandbox.repository.SQSRepository;
 
 @SpringBootTest
 public class SQSRepositoryTest {
