@@ -50,4 +50,12 @@ public class SqsConfig {
         return this.awsRegion;
     }
 
+    public String getUrlBase() {
+        return getAWSEndpoint() + "/" + getAWSAccountId() + "/";
+    }
+
+    public String getURL() {
+        return "sqs." + getAWSRegion() + "." + getAWSEndpoint().replace("http://", "") +  "/" + getAWSAccountId() + "/";
+    }
+
 }

@@ -3,18 +3,20 @@ package luz.erick.spring_aws_sandbox.repository;
 
 import java.util.List;
 
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import luz.erick.spring_aws_sandbox.config.SqsConfig;
+import software.amazon.awssdk.services.sqs.model.Message;
 
 @SpringBootTest
 public class SQSRepositoryTest {
 
     @Autowired
-    private SQSRepository repositorySQS;
+    private SQSRepository sqsRepository;
 
     @Autowired 
     private SqsConfig sqsConfig;
@@ -22,39 +24,37 @@ public class SQSRepositoryTest {
     @Test 
     void deveCriarEListarQueues() {
 
-        repositorySQS.createQueue("q1");
-        repositorySQS.createQueue("q2");
+        sqsRepository.createQueue("q1");
+        sqsRepository.createQueue("q2");
 
-        List<String> queues = repositorySQS.listQueues()
+        List<String> queues = sqsRepository.listQueues()
                                 .stream()
                                 .map(q -> q.replace("http://", ""))
                                 .toList();
 
-        String URLServer = getURL();
-        String URLBase = getUrlBase();
+        String URLServer = sqsConfig.getURL();
+        String URLBase = sqsConfig.getUrlBase();
 
         Assertions.assertEquals(URLServer + "q1", queues.get(0));
         Assertions.assertEquals(URLServer + "q2", queues.get(1));
 
         String messageTest = "msgTeste1";
-        repositorySQS.sendMessage("q1", messageTest);
+        sqsRepository.sendMessage("q1", messageTest);
 
-        List<String> messages = repositorySQS.receiveMessages(URLBase + "q1");
-        String message = messages.get(0);
-        Assertions.assertEquals(messageTest, message);
+        List<Message> messages = sqsRepository.receiveMessages(URLBase + "q1");
+        Message message = messages.get(0);
+        Assertions.assertEquals(messageTest, message.body());
 
-        repositorySQS.deleteQueue(URLBase + "q1"); 
-        repositorySQS.deleteQueue(URLBase + "q2"); 
+        sqsRepository.deleteMessage(URLBase + "q1", Lists.newArrayList(message));
 
-        Assertions.assertTrue(repositorySQS.listQueues().isEmpty());
-    }
+        messages = sqsRepository.receiveMessages(URLBase + "q1");
 
-    private String getUrlBase() {
-        return sqsConfig.getAWSEndpoint() + "/" + sqsConfig.getAWSAccountId() + "/";
-    }
+        Assertions.assertTrue(messages.isEmpty());
 
-    private String getURL() {
-        return "sqs." + sqsConfig.getAWSRegion() + "." + sqsConfig.getAWSEndpoint().replace("http://", "") +  "/" + sqsConfig.getAWSAccountId() + "/";
+        sqsRepository.deleteQueue(URLBase + "q1"); 
+        sqsRepository.deleteQueue(URLBase + "q2"); 
+
+        Assertions.assertTrue(sqsRepository.listQueues().isEmpty());
     }
 
 }

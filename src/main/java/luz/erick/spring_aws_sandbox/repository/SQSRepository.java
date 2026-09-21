@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.CreateQueueRequest;
+import software.amazon.awssdk.services.sqs.model.DeleteMessageRequest;
 import software.amazon.awssdk.services.sqs.model.DeleteQueueRequest;
 import software.amazon.awssdk.services.sqs.model.GetQueueUrlRequest;
 import software.amazon.awssdk.services.sqs.model.GetQueueUrlResponse;
@@ -94,14 +95,13 @@ public class SQSRepository {
         }
     }
 
-    public List<String> receiveMessages(String queueURL) {
+    public List<String> receiveMessagesString(String queueURL) {
         try {
             ReceiveMessageRequest receiveMessageRequest = ReceiveMessageRequest.builder()
                     .queueUrl(queueURL)
                     .maxNumberOfMessages(5)
                     .build();
             List<Message> response = this.sqsClient.receiveMessage(receiveMessageRequest).messages();
-            
             return response.stream().map(m -> m.body()).toList();
 
         } catch (SqsException e) {
@@ -109,6 +109,36 @@ public class SQSRepository {
             System.exit(1);
         }
         return null;
+    }
+
+    public List<Message> receiveMessages(String queueURL) {
+        try {
+            ReceiveMessageRequest receiveMessageRequest = ReceiveMessageRequest.builder()
+                    .queueUrl(queueURL)
+                    .maxNumberOfMessages(5)
+                    .build();
+            return this.sqsClient.receiveMessage(receiveMessageRequest).messages();
+
+        } catch (SqsException e) {
+            System.err.println(e.awsErrorDetails().errorMessage());
+            System.exit(1);
+        }
+        return null;
+    }
+
+    public void deleteMessage(String queueURL, List<Message> messages) {
+        try {
+            for (Message message : messages) {
+                DeleteMessageRequest deleteMessageRequest = DeleteMessageRequest.builder()
+                        .queueUrl(queueURL)
+                        .receiptHandle(message.receiptHandle())
+                        .build();
+                sqsClient.deleteMessage(deleteMessageRequest);
+            }
+        } catch (SqsException e) {
+            System.err.println(e.awsErrorDetails().errorMessage());
+            System.exit(1);
+        }
     }
 
 }
