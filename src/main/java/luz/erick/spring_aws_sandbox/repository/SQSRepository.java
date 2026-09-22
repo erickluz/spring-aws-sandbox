@@ -36,7 +36,6 @@ public class SQSRepository {
                     .collect(Collectors.toList());
         } catch (SqsException e) {
             System.err.println(e.awsErrorDetails().errorMessage());
-            System.exit(1);
         }
         return null;
     }
@@ -55,7 +54,6 @@ public class SQSRepository {
 
         } catch (SqsException e) {
             System.err.println(e.awsErrorDetails().errorMessage());
-            System.exit(1);
         }
         return "";
     }
@@ -69,7 +67,6 @@ public class SQSRepository {
             sqsClient.deleteQueue(createQueueRequest);
         } catch (SqsException e) {
             System.err.println(e.awsErrorDetails().errorMessage());
-            System.exit(1);
         }
         return "";
     }
@@ -91,7 +88,6 @@ public class SQSRepository {
 
         } catch (SqsException e) {
             System.err.println(e.awsErrorDetails().errorMessage());
-            System.exit(1);
         }
     }
 
@@ -106,7 +102,6 @@ public class SQSRepository {
 
         } catch (SqsException e) {
             System.err.println(e.awsErrorDetails().errorMessage());
-            System.exit(1);
         }
         return null;
     }
@@ -121,7 +116,6 @@ public class SQSRepository {
 
         } catch (SqsException e) {
             System.err.println(e.awsErrorDetails().errorMessage());
-            System.exit(1);
         }
         return null;
     }
@@ -137,7 +131,6 @@ public class SQSRepository {
             }
         } catch (SqsException e) {
             System.err.println(e.awsErrorDetails().errorMessage());
-            System.exit(1);
         }
     }
 
