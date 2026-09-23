@@ -18,7 +18,7 @@ import software.amazon.awssdk.services.sqs.model.SqsException;
 import software.amazon.awssdk.services.sqs.paginators.ListQueuesIterable;
 
 
-@Service 
+@Service  
 public class SQSRepository {
 
     private SqsClient sqsClient;

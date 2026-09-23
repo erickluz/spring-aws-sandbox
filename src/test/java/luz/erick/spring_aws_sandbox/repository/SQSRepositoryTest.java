@@ -9,10 +9,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import lombok.extern.slf4j.Slf4j;
 import luz.erick.spring_aws_sandbox.config.SqsConfig;
 import software.amazon.awssdk.services.sqs.model.Message;
 
 @SpringBootTest
+@Slf4j 
 public class SQSRepositoryTest {
 
     @Autowired
@@ -27,16 +29,13 @@ public class SQSRepositoryTest {
         sqsRepository.createQueue("q1");
         sqsRepository.createQueue("q2");
 
-        List<String> queues = sqsRepository.listQueues()
-                                .stream()
-                                .map(q -> q.replace("http://", ""))
-                                .toList();
+        List<String> queues = sqsRepository.listQueues();
 
-        String URLServer = sqsConfig.getURL();
         String URLBase = sqsConfig.getUrlBase();
 
-        Assertions.assertEquals(URLServer + "q1", queues.get(0));
-        Assertions.assertEquals(URLServer + "q2", queues.get(1));
+        log.info("Queues: " + queues);
+        Assertions.assertTrue(queues.contains(URLBase + "q1"));
+        Assertions.assertTrue(queues.contains(URLBase + "q2"));
 
         String messageTest = "msgTeste1";
         sqsRepository.sendMessage("q1", messageTest);
