@@ -15,12 +15,17 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import luz.erick.spring_aws_sandbox.config.SqsConfig;
 
 @SpringBootTest
 public class SQSSpringCloudRepositoryTest {
 
     @Autowired
     private SQSSpringCloudRepository sqsSpringCloudRepository;
+    @Autowired 
+    private SQSRepository sqsRepository;
+    @Autowired 
+    private SqsConfig sqsConfig;
 
     private final Logger listenerLogger = (Logger) LoggerFactory.getLogger(SQSSpringCloudListener.class);
     private ListAppender<ILoggingEvent> logs;
@@ -46,7 +51,7 @@ public class SQSSpringCloudRepositoryTest {
         while (Instant.now().isBefore(deadline) && !messageFoiConsumida(message)) {
             Thread.sleep(100);
         }
-
+        sqsRepository.deleteQueue(sqsConfig.getUrlBase() + "q3");
         assertTrue(messageFoiConsumida(message), "A mensagem deveria ser processada pelo listener SQS");
     }
 
