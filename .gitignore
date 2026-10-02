@@ -31,3 +31,38 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### OS files ###
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+### Logs and temporary files ###
+*.log
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+### Java ###
+*.class
+hs_err_pid*
+replay_pid*
+
+### Terraform ###
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+!*.tfvars.json.example
+.terraformrc
+terraform.rc

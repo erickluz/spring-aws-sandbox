@@ -83,6 +83,12 @@
 			<version>4.1.1</version>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>io.awspring.cloud</groupId>
+			<artifactId>spring-cloud-aws-starter-sns</artifactId>
+			<version>4.1.1</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 
 	<build>

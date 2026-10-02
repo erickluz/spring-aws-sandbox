@@ -51,8 +51,22 @@ public class Pedido {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    protected Pedido() {
+    public Pedido() {
     }
+
+    public Pedido(Long id, Long pedidoId, Long clienteId, String cpfValido, boolean estoqueDisponivel,
+            boolean requerAnaliseAntifraude, LocalDateTime agendadoPara, StatusPedido status) {
+        this.id = id;
+        this.pedidoId = pedidoId;
+        this.clienteId = clienteId;
+        this.cpfValido = cpfValido;
+        this.estoqueDisponivel = estoqueDisponivel;
+        this.requerAnaliseAntifraude = requerAnaliseAntifraude;
+        this.agendadoPara = agendadoPara;
+        this.status = status;
+    }
+
+
 
     public Pedido(PedidoEvento evento) {
         this.pedidoId = evento.pedidoId();
@@ -107,4 +121,18 @@ public class Pedido {
     public StatusPedido getStatus() { return status; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
+
+    @Override
+    public String toString() {
+        return "Pedido [id=" + id + ", pedidoId=" + pedidoId + ", clienteId=" + clienteId + ", cpfValido=" + cpfValido
+                + ", estoqueDisponivel=" + estoqueDisponivel + ", requerAnaliseAntifraude=" + requerAnaliseAntifraude
+                + ", agendadoPara=" + agendadoPara + ", status=" + status + ", createdAt=" + createdAt + ", updatedAt="
+                + updatedAt + ", getClass()=" + getClass() + ", getId()=" + getId() + ", getPedidoId()=" + getPedidoId()
+                + ", getClienteId()=" + getClienteId() + ", getCpfValido()=" + getCpfValido()
+                + ", isEstoqueDisponivel()=" + isEstoqueDisponivel() + ", isRequerAnaliseAntifraude()="
+                + isRequerAnaliseAntifraude() + ", getAgendadoPara()=" + getAgendadoPara() + ", getStatus()="
+                + getStatus() + ", getCreatedAt()=" + getCreatedAt() + ", getUpdatedAt()=" + getUpdatedAt()
+                + ", hashCode()=" + hashCode() + ", toString()=" + super.toString() + "]";
+    }
+    
 }
